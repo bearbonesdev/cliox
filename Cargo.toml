@@ -10,11 +10,11 @@ license = "MIT"
 resolver = "2"
 
 [workspace]
-members = ["cliox-macros"]
+members = ["cliox_macros"]
 
 [workspace.dependencies]
-cliox-macros = { path = "./cliox-macros", version = "0.1" }
+cliox_macros = { path = "./cliox_macros", version = "0.1" }
 
 
 [dependencies]
-cliox-macros.workspace = true
+cliox_macros.workspace = true

@@ -1,5 +1,5 @@
 [package]
-name = "cliox-macros"
+name = "cliox_macros"
 dscription = "internal crate for cliox"
 version = "0.1.0"
 edition = "2024"
