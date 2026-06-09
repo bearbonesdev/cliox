@@ -1,6 +1,8 @@
 [package]
 name = "cliox_macros"
 dscription = "internal crate for cliox"
+repository = "https://github.com/bearbonesdev/cliox"
+readme = "README.md"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
