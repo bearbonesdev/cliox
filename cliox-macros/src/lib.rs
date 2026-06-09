@@ -1,5 +1,5 @@
 /**
- * oocli provides the Commandable trait and oocli attribute to define how a struct
+ * cliox provides the Commandable trait and cliox attribute to define how a struct
  * can be turned into a std::process::Command
  */
 extern crate proc_macro2;
