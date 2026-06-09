@@ -72,9 +72,18 @@ pub(crate) fn derive_cliox_impl(input: TokenStream) -> TokenStream {
 
             // pass value directly
             if field_args.pass_through {
-                output.extend(quote! {
-                    cmd.arg(value.#f_ident);
-                });
+                if is_option_type(&field.ty) {
+                    output.extend(quote! {
+                        if let Some(v) = value.#f_ident {
+                            cmd.arg(v);
+                        }
+                    });
+                } else {
+                    output.extend(quote! {
+                        cmd.arg(value.#f_ident);
+                    });
+                }
+
                 continue;
             }
 
@@ -97,9 +106,18 @@ pub(crate) fn derive_cliox_impl(input: TokenStream) -> TokenStream {
 
             // set env based on name and string value
             if field_args.env {
-                output.extend(quote! {
-                    cmd.env(#name, format!("{}",value.#f_ident));
-                });
+                if is_option_type(&field.ty) {
+                    output.extend(quote! {
+                        if let Some(v) = value.#f_ident {
+                            cmd.env(#name, format!("{}",v));
+                        }
+                    });
+                } else {
+                    output.extend(quote! {
+                        cmd.env(#name, format!("{}",value.#f_ident));
+                    });
+                }
+
                 continue;
             }
 
@@ -151,14 +169,31 @@ pub(crate) fn derive_cliox_impl(input: TokenStream) -> TokenStream {
             // is something like `=` it can be used directly with no spaces
             // todo: is there a better way to handle this?
             if !delimiter.is_empty() && delimiter.trim().is_empty() {
-                output.extend(quote! {
-                    cmd.arg(format!("{}{}",#prefix,#name));
-                    cmd.arg(format!("{}",value.#f_ident));
-                });
+                if is_option_type(&field.ty) {
+                    output.extend(quote! {
+                        if let Some(v) = value.#f_ident {
+                            cmd.arg(format!("{}{}",#prefix,#name));
+                            cmd.arg(format!("{}",v));
+                        }
+                    });
+                } else {
+                    output.extend(quote! {
+                        cmd.arg(format!("{}{}",#prefix,#name));
+                        cmd.arg(format!("{}",value.#f_ident));
+                    });
+                }
             } else {
-                output.extend(quote! {
-                    cmd.arg(format!("{}{}{}{}",#prefix,#name,#delimiter,value.#f_ident));
-                });
+                if is_option_type(&field.ty) {
+                    output.extend(quote! {
+                        if let Some(v) = value.#f_ident {
+                            cmd.arg(format!("{}{}{}{}",#prefix,#name,#delimiter,v));
+                        }
+                    });
+                } else {
+                    output.extend(quote! {
+                        cmd.arg(format!("{}{}{}{}",#prefix,#name,#delimiter,value.#f_ident));
+                    });
+                }
             }
         }
 
@@ -446,6 +481,20 @@ fn is_bool_type(ty: &Type) -> bool {
     type_path.is_ident("bool")
 }
 
+fn is_option_type(ty: &Type) -> bool {
+    let type_path = match ty {
+        Type::Path(path) => &path.path,
+        _ => return false,
+    };
+
+    // Check for `Option<...>` type
+    if type_path.segments.len() == 1 && type_path.segments[0].ident == "Option" {
+        return true;
+    }
+
+    false
+}
+
 /**
  * checks if a type is `Option<bool>`
  */
@@ -456,12 +505,12 @@ fn is_option_bool_type(ty: &Type) -> bool {
     };
 
     // Check for `Option<...>` type
-    if type_path.segments.len() == 1 && type_path.segments[0].ident == "Option" {
-        if let syn::PathArguments::AngleBracketed(args) = &type_path.segments[0].arguments {
-            if args.args.len() == 1 {
-                if let syn::GenericArgument::Type(inner_ty) = &args.args[0] {
-                    return is_bool_type(inner_ty);
-                }
+    if is_option_type(ty)
+        && let syn::PathArguments::AngleBracketed(args) = &type_path.segments[0].arguments
+    {
+        if args.args.len() == 1 {
+            if let syn::GenericArgument::Type(inner_ty) = &args.args[0] {
+                return is_bool_type(inner_ty);
             }
         }
     }
