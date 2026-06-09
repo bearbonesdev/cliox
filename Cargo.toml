@@ -5,7 +5,7 @@ repository = "https://github.com/bearbonesdev/cliox.git"
 version = "0.1.0"
 edition = "2024"
 readme = "README.md"
-keywords = ["cli", "command-line-utilities", "development-tools::cli"]
+keywords = ["cli"]
 license = "MIT"
 resolver = "2"
 
