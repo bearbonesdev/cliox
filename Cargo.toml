@@ -1,0 +1,13 @@
+[package]
+name = "oocli"
+version = "0.1.0"
+edition = "2024"
+readme = "README.md"
+license = "MIT"
+resolver = "2"
+
+[workspace]
+members = ["oocli-macros"]
+
+[dependencies]
+oocli-macros = { path = "./oocli-macros" }
