@@ -1,19 +1,19 @@
 /**
- * these tests test oocli functionality against direct Command initialization
+ * these tests test cliox functionality against direct Command initialization
  * rather than command output. The assumption is that if the two commands are
- * "equal" oocli is doing its job. future unit tests may be added to verify this
+ * "equal" cliox is doing its job. future unit tests may be added to verify this
  * assumption, but uat testing so far confirms.
  */
-use oocli::Commandable;
+use cliox::Commandable;
 
 #[derive(Commandable)]
-#[oocli(command = "git")]
+#[cliox(command = "git")]
 struct MockCmd {
-    #[oocli(pass_through)]
+    #[cliox(pass_through)]
     sub_command: String,
-    #[oocli(rename = "m", prefix = "-")]
+    #[cliox(rename = "m", prefix = "-")]
     message: String,
-    #[oocli(skip)]
+    #[cliox(skip)]
     _comment: String,
 }
 
@@ -40,14 +40,14 @@ fn test_macro() {
 }
 
 #[derive(Commandable)]
-#[oocli(
+#[cliox(
     command = "git commit",
     env(name = "GIT_COMMITTER_EMAIL", value = "test@example.com")
 )]
 struct MockEnvCmd {
-    #[oocli(rename = "m", prefix = "-")]
+    #[cliox(rename = "m", prefix = "-")]
     message: String,
-    #[oocli(env, rename_all = "SCREAMING_SNAKE_CASE")]
+    #[cliox(env, rename_all = "SCREAMING_SNAKE_CASE")]
     git_dir: String,
 }
 
@@ -72,7 +72,7 @@ fn test_env() {
 }
 
 #[derive(Commandable)]
-#[oocli(command = "git fetch")]
+#[cliox(command = "git fetch")]
 struct MockFlagCmd {
     prune: Option<bool>,
     all: Option<bool>,
@@ -94,7 +94,7 @@ fn test_flag() {
 }
 
 #[derive(Commandable)]
-#[oocli(command = "git log", delimiter = "=")]
+#[cliox(command = "git log", delimiter = "=")]
 struct MockLogCmd {
     format: String,
 }
@@ -114,9 +114,9 @@ fn test_log() {
 }
 
 #[derive(Commandable)]
-#[oocli(command = "git log")]
+#[cliox(command = "git log")]
 struct MockLogFieldCmd {
-    #[oocli(delimiter = "=")]
+    #[cliox(delimiter = "=")]
     format: String,
 }
 
@@ -135,9 +135,9 @@ fn test_log_field() {
 }
 
 #[derive(Commandable)]
-#[oocli(command = "git fetch", rename_all = "SCREAMING_SNAKE_CASE")]
+#[cliox(command = "git fetch", rename_all = "SCREAMING_SNAKE_CASE")]
 struct MockRenameAllCmd {
-    #[oocli(env)]
+    #[cliox(env)]
     git_dir: String,
 }
 

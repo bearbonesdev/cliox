@@ -1,1 +1,1 @@
-pub use oocli_macros::Commandable;
+pub use cliox_macros::Commandable;
