@@ -7,6 +7,23 @@
 use cliox::Commandable;
 
 #[derive(Commandable)]
+#[cliox(command = "ls")]
+struct MockLs {}
+
+/**
+ * test basic command implementation
+ */
+#[test]
+fn test_cmd() {
+    let expected = std::process::Command::new("ls");
+
+    let actual = std::process::Command::from(MockLs {});
+
+    println!("{:?}", actual);
+    assert_eq!(format!("{:?}", expected), format!("{:?}", actual));
+}
+
+#[derive(Commandable)]
 #[cliox(command = "git")]
 struct MockCmd {
     #[cliox(pass_through)]
